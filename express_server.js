@@ -14,8 +14,14 @@ const urlDatabase = {
 };
 
 const generateRandomString = () => {
-  
-}
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let randomString = "";
+  for (let i = 1; i <= 6; i++) {
+    const randomNum = Math.floor(Math.random() * 62);
+    randomString += characters[randomNum];
+  }
+  return randomString;
+};
 
 
 app.get("/urls", (req, res) => {
@@ -24,8 +30,9 @@ app.get("/urls", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);
-  res.send("Ok");
+  const key = generateRandomString();
+  urlDatabase[key] = req.body.longURL;
+  res.redirect(`/urls/${key}`);
 });
 
 app.get("/urls/new", (req, res) => {
@@ -35,6 +42,11 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
 });
 
 app.get("/urls.json", (req, res) => {
