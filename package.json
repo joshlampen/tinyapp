@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/JoshLampen/tinyapp#readme",
   "dependencies": {
+    "ejs": "^3.1.2",
     "express": "^4.17.1"
   }
 }
