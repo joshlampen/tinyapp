@@ -13,6 +13,8 @@ app.use(cookieParser());
 
 
 // constants --> move to other file
+let registerErrorMessage = "";
+
 const users = {
   "userRandomID": {
     id: "userRandomID",
@@ -34,6 +36,15 @@ const generateRandomString = () => {
     randomString += characters[randomNum];
   }
   return randomString;
+};
+
+const emailUsed = email => {
+  for (const user in users) {
+    if (users[user].email === email) {
+      return true;
+    }
+  }
+  return false;
 };
 
 
@@ -111,23 +122,34 @@ app.post("/logout", (req, res) => {
 });
 
 // get the 'register' page
-app.get("/register", (req, res) => {
+app.get("/register/", (req, res) => {
   const templateVars = {
-    registered: false
+    registered: false,
+    registerErrorMessage
   };
   res.render("urls_register", templateVars);
 });
 
 // register a new email and password from the 'register' page
 app.post("/register", (req, res) => {
-  const userID = generateRandomString();
-  users[userID] = {
-    id: userID,
-    email: req.body.email,
-    password: req.body.password
-  };
-  res.cookie("user_id", userID);
-  res.redirect("/urls");
+  if (!req.body.email || !req.body.password) {
+    res.statusCode = 400;
+    registerErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
+    res.redirect("back");
+  } else if (emailUsed(req.body.email)) {
+    res.statusCode = 400;
+    registerErrorMessage = `Error ${res.statusCode}: Email is already being used`;
+    res.redirect("back");
+  } else {
+    const userID = generateRandomString();
+    users[userID] = {
+      id: userID,
+      email: req.body.email,
+      password: req.body.password
+    };
+    res.cookie("user_id", userID);
+    res.redirect("/urls");
+  }
 });
 
 // app.get("/urls.json", (req, res) => {

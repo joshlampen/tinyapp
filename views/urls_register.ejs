@@ -16,14 +16,17 @@
 
     <main style="margin: 2em">
       <h3 style="text-align: center">Register</h3>
-      <div style="display: flex; justify-content: center; align-items: center">
+      <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
         <form class="form-inline" action="/register" method="POST">
           <div class="form-group mb-2" style="flex-direction: column">
             <input class="form-control" type="email" name="email" placeholder="Email" style="width: 300px; margin: 1em 0em 0em 0em">
             <input class="form-control" type="password" name="password" placeholder="Password" style="width: 300px; margin: 1em">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" style="margin: 0em 0em 1em 0em">Submit</button>
           </div>
         </form>
+        <% if (registerErrorMessage) { %>
+          <h6 class="alert-danger" style="text-align: center; width: 450px; padding: 0.75em; border-radius: 10px"><%= registerErrorMessage %></h6>
+        <% } %>
       </div>
     </main>
       <!-- Bootstrap JS -->
