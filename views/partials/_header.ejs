@@ -15,17 +15,17 @@
       <h6 style="color: white; margin: 1.1em">Logged In As: <%= user.email %>!</h6>
       <form class="form-inline" action="/logout" method="POST">
         <div>
-          <button type="logout" class="btn btn-default" style="color: white; border-color: white; margin: 0.5em 0em 0.5em 0.5em">Logout</button>
+          <button type="logout" class="btn btn-success" style="margin: 0.5em 0em 0.5em 0.5em">Logout</button>
         </div>
       </form>
     </div>
   <% } else { %>
     <div style="display: flex">
       <form class="form-inline" action="/login" method="GET">
-          <button type="login" class="btn btn-default" style="color: white; border-color: white; margin: 0.5em 0em 0.5em 0.5em; width: 90px">Login</button>
+          <button type="login" class="btn btn-success" style="margin: 0.5em 0em 0.5em 0.5em; width: 90px">Login</button>
       </form>
       <form class="form-inline" action="/register" method="GET">
-          <button type="login" class="btn btn-default" style="color: white; border-color: white; margin: 0.5em 0em 0.5em 0.5em; width: 90px">Register</button>
+          <button type="login" class="btn btn-success" style="margin: 0.5em 0em 0.5em 0.5em; width: 90px">Register</button>
       </form>
     </div>
   <% } %>
