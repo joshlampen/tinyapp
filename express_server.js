@@ -127,6 +127,7 @@ app.get("/register", (req, res) => {
     registerErrorMessage
   };
   res.render("urls_register", templateVars);
+  registerErrorMessage = "";
 });
 
 // register a new email and password from the 'register' page
@@ -162,6 +163,7 @@ app.get("/login", (req, res) => {
     loginErrorMessage
   };
   res.render("urls_login", templateVars);
+  loginErrorMessage = "";
 });
 
 // 'login' with existing email and password
