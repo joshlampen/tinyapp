@@ -13,6 +13,14 @@ app.use(cookieParser());
 
 
 // constants --> move to other file
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "example"
+  }
+};
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -31,8 +39,9 @@ const generateRandomString = () => {
 
 // get homepage
 app.get("/urls", (req, res) => {
-  let templateVars = {
-    username: req.cookies["username"],
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    user: users[userID],
     urls: urlDatabase,
     registered: true
   };
@@ -48,8 +57,9 @@ app.post("/urls", (req, res) => {
 
 // get page for creating new url
 app.get("/urls/new", (req, res) => {
-  let templateVars = {
-    username: req.cookies["username"],
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    user: users[userID],
     registered: true
   };
   res.render("urls_new", templateVars);
@@ -64,8 +74,9 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // get page for existing short URL from homepage
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = {
-    username: req.cookies["username"],
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    user: users[userID],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
     registered: true
@@ -101,17 +112,23 @@ app.post("/logout", (req, res) => {
 
 // get the 'register' page
 app.get("/register", (req, res) => {
-  let templateVars = {
+  const templateVars = {
     registered: false
   };
   res.render("urls_register", templateVars);
 });
 
 // register a new email and password from the 'register' page
-// app.post("/register", (req, res) => {
-//   res.cookie("email", req.body.email);
-//   res.cookie("password", req.body.password);
-// });
+app.post("/register", (req, res) => {
+  const userID = generateRandomString();
+  users[userID] = {
+    id: userID,
+    email: req.body.email,
+    password: req.body.password
+  };
+  res.cookie("user_id", userID);
+  res.redirect("/urls");
+});
 
 // app.get("/urls.json", (req, res) => {
 //   res.json(urlDatabase);

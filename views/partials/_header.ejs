@@ -1,7 +1,7 @@
 <header>
   <% if (!registered) { %>
     <nav class="navbar navbar-expand-md navbar-dark bg-success">
-      <a class="navbar-brand" href="">TinyApp</a>
+      <a class="navbar-brand" href="" style="margin: 0.35em 0em 0.35em 0em">TinyApp</a>
   <% } else { %>
     <nav class="navbar navbar-expand-md navbar-dark bg-success">
       <a class="navbar-brand" href="/urls">TinyApp</a>
@@ -14,9 +14,9 @@
           <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         </div>
       </div>
-    <% if (username) { %>
+    <% if (user) { %>
       <div style="display: flex; flex-direction: row">
-        <h6 style="color: white; margin: 1em">Logged In As: <%= username %>!</h6>
+        <h6 style="color: white; margin: 1.1em">Logged In As: <%= user.email %>!</h6>
         <form class="form-inline" action="/logout" method="POST">
           <div>
             <button type="logout" class="btn btn-default" style="color: white; border-color: white; margin: 0.5em 0em 0.5em 0.5em">Logout</button>
