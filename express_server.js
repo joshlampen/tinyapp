@@ -14,6 +14,7 @@ app.use(cookieParser());
 
 // constants --> move to other file
 let registerErrorMessage = "";
+let loginErrorMessage = "";
 
 const users = {
   "userRandomID": {
@@ -47,6 +48,15 @@ const emailUsed = email => {
   return false;
 };
 
+const validUser = (email, password) => {
+  for (const user in users) {
+    if (users[user].email === email && users[user].password === password) {
+      return true;
+    }
+  }
+  return false;
+}
+
 
 // get homepage
 app.get("/urls", (req, res) => {
@@ -54,7 +64,7 @@ app.get("/urls", (req, res) => {
   const templateVars = {
     user: users[userID],
     urls: urlDatabase,
-    registered: true
+    loginOrRegisterPage: false
   };
   res.render("urls_index", templateVars);
 });
@@ -71,7 +81,7 @@ app.get("/urls/new", (req, res) => {
   const userID = req.cookies["user_id"];
   const templateVars = {
     user: users[userID],
-    registered: true
+    loginOrRegisterPage: false
   };
   res.render("urls_new", templateVars);
 });
@@ -90,7 +100,7 @@ app.get("/urls/:shortURL", (req, res) => {
     user: users[userID],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    registered: true
+    loginOrRegisterPage: false
   };
   res.render("urls_show", templateVars);
 });
@@ -122,9 +132,9 @@ app.post("/logout", (req, res) => {
 });
 
 // get the 'register' page
-app.get("/register/", (req, res) => {
+app.get("/register", (req, res) => {
   const templateVars = {
-    registered: false,
+    loginOrRegisterPage: true,
     registerErrorMessage
   };
   res.render("urls_register", templateVars);
@@ -132,11 +142,14 @@ app.get("/register/", (req, res) => {
 
 // register a new email and password from the 'register' page
 app.post("/register", (req, res) => {
-  if (!req.body.email || !req.body.password) {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  if (!email || !password) {
     res.statusCode = 400;
     registerErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
     res.redirect("back");
-  } else if (emailUsed(req.body.email)) {
+  } else if (emailUsed(email)) {
     res.statusCode = 400;
     registerErrorMessage = `Error ${res.statusCode}: Email is already being used`;
     res.redirect("back");
@@ -144,13 +157,41 @@ app.post("/register", (req, res) => {
     const userID = generateRandomString();
     users[userID] = {
       id: userID,
-      email: req.body.email,
-      password: req.body.password
+      email,
+      password
     };
     res.cookie("user_id", userID);
     res.redirect("/urls");
   }
 });
+
+// get the 'login' page
+app.get("/login", (req, res) => {
+  const templateVars = {
+    loginOrRegisterPage: true,
+    loginErrorMessage
+  };
+  res.render("urls_login", templateVars);
+});
+
+// enter website upon successful login
+app.post("/login", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  if (!email || !password) {
+    res.statusCode = 400;
+    registerErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
+    res.redirect("back");
+  } else if (!validUser(email, password)) {
+    res.statusCode = 400;
+    registerErrorMessage = `Error ${res.statusCode}: No user registered under the given email`;
+    res.redirect("back");
+  } else {
+
+  }
+});
+
 
 // app.get("/urls.json", (req, res) => {
 //   res.json(urlDatabase);
