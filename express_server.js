@@ -11,6 +11,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+});
+
 
 // constants --> move to other file
 let registerErrorMessage = "";
@@ -39,22 +43,13 @@ const generateRandomString = () => {
   return randomString;
 };
 
-const emailUsed = email => {
+const findUserByEmail = email => {
   for (const user in users) {
     if (users[user].email === email) {
-      return true;
+      return users[user];
     }
   }
-  return false;
-};
-
-const validUser = (email, password) => {
-  for (const user in users) {
-    if (users[user].email === email && users[user].password === password) {
-      return true;
-    }
-  }
-  return false;
+  return undefined;
 }
 
 
@@ -64,7 +59,6 @@ app.get("/urls", (req, res) => {
   const templateVars = {
     user: users[userID],
     urls: urlDatabase,
-    loginOrRegisterPage: false
   };
   res.render("urls_index", templateVars);
 });
@@ -81,7 +75,6 @@ app.get("/urls/new", (req, res) => {
   const userID = req.cookies["user_id"];
   const templateVars = {
     user: users[userID],
-    loginOrRegisterPage: false
   };
   res.render("urls_new", templateVars);
 });
@@ -100,7 +93,6 @@ app.get("/urls/:shortURL", (req, res) => {
     user: users[userID],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    loginOrRegisterPage: false
   };
   res.render("urls_show", templateVars);
 });
@@ -119,22 +111,19 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-// 'login' and add a new username
-app.post("/login", (req, res) => {
-  res.cookie("username", req.body.username);
-  res.redirect("/urls");
-});
 
-// 'logout' and delete a username
+// LOGIN AND LOGOUT
+// 'logout' and clear the appropriate user_id cookie
 app.post("/logout", (req, res) => {
-  res.clearCookie("username");
+  res.clearCookie("user_id");
   res.redirect("/urls");
 });
 
 // get the 'register' page
 app.get("/register", (req, res) => {
+  const userID = req.cookies["user_id"];
   const templateVars = {
-    loginOrRegisterPage: true,
+    user: users[userID],
     registerErrorMessage
   };
   res.render("urls_register", templateVars);
@@ -149,7 +138,7 @@ app.post("/register", (req, res) => {
     res.statusCode = 400;
     registerErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
     res.redirect("back");
-  } else if (emailUsed(email)) {
+  } else if (findUserByEmail(email)) {
     res.statusCode = 400;
     registerErrorMessage = `Error ${res.statusCode}: Email is already being used`;
     res.redirect("back");
@@ -167,37 +156,34 @@ app.post("/register", (req, res) => {
 
 // get the 'login' page
 app.get("/login", (req, res) => {
+  const userID = req.cookies["user_id"];
   const templateVars = {
-    loginOrRegisterPage: true,
+    user: users[userID],
     loginErrorMessage
   };
   res.render("urls_login", templateVars);
 });
 
-// enter website upon successful login
+// 'login' with existing email and password
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  const user = findUserByEmail(email);
 
   if (!email || !password) {
     res.statusCode = 400;
-    registerErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
+    loginErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
     res.redirect("back");
-  } else if (!validUser(email, password)) {
-    res.statusCode = 400;
-    registerErrorMessage = `Error ${res.statusCode}: No user registered under the given email`;
+  } else if (!user) {
+    res.statusCode = 403;
+    loginErrorMessage = `Error ${res.statusCode}: Email cannot be found`;
+    res.redirect("back");
+  } else if (user.password !== password) {
+    res.statusCode = 403;
+    loginErrorMessage = `Error ${res.statusCode}: Password does not match email`;
     res.redirect("back");
   } else {
-
+    res.cookie("user_id", user.id);
+    res.redirect("/urls");
   }
-});
-
-
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
 });
