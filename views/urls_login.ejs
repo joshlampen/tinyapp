@@ -26,6 +26,8 @@
         </form>
         <% if (loginErrorMessage) { %>
           <h6 class="alert-danger" style="text-align: center; width: 450px; padding: 0.75em; border-radius: 10px"><%= loginErrorMessage %></h6>
+        <% } else if (loginReminderMessage) { %>
+          <h6 class="alert-info" style="text-align: center; width: 450px; padding: 0.75em; border-radius: 10px"><%= loginReminderMessage %></h6>
         <% } %>
       </div>
     </main>

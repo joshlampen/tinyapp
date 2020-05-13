@@ -25,18 +25,18 @@
         </tr>
       </thead>
       <tbody>
-        <% for (let url in urls) { %>
+        <% for (let shortURL in urls) { %>
           <tr>
-            <td><%= url %></td>
-            <td><%= urls[url] %></td>
+            <td><%= shortURL %></td>
+            <td><%= urls[shortURL] %></td>
             <td>
-              <form method="GET" action="/urls/<%= url %>">
-                <button type="edit" class="btn btn-default" style="color: rgb(0, 119, 255); border-color: rgb(0, 119, 255)">Edit</button>
+              <form method="GET" action="/urls/<%= shortURL %>">
+                <button type="edit" class="btn btn-default" style="color: rgb(0, 119, 255); border-color: rgb(0, 119, 255); width: 75px">Edit</button>
               </form>
             </td>
             <td>
-              <form method="POST" action="/urls/<%= url %>/delete">
-                <button type="delete" class="btn btn-default" style="color: red; border-color: red">Delete</button>
+              <form method="POST" action="/urls/<%= shortURL %>/delete">
+                <button type="delete" class="btn btn-default" style="color: red; border-color: red; width: 75px">Delete</button>
               </form>
             </td>
           </tr>

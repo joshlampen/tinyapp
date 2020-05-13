@@ -19,6 +19,8 @@ app.listen(PORT, () => {
 // constants --> move to other file
 let registerErrorMessage = "";
 let loginErrorMessage = "";
+let loginReminderMessage = "";
+let loggedIn = false;
 
 const users = {
   "userRandomID": {
@@ -29,8 +31,8 @@ const users = {
 };
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 const generateRandomString = () => {
@@ -50,33 +52,59 @@ const findUserByEmail = email => {
     }
   }
   return undefined;
-}
+};
+
+const findUserURLs = userID => {
+  const userURLs = {};
+  for (const shortURL in urlDatabase) {
+    const longURL = urlDatabase[shortURL].longURL;
+    if (urlDatabase[shortURL].userID === userID) {
+      userURLs[shortURL] = longURL;
+    }
+  }
+  return userURLs;
+};
 
 
 // get homepage
 app.get("/urls", (req, res) => {
   const userID = req.cookies["user_id"];
+  const userURLs = findUserURLs(userID);
+
   const templateVars = {
     user: users[userID],
-    urls: urlDatabase,
+    urls: userURLs
   };
+
   res.render("urls_index", templateVars);
 });
 
 // post new url to homepage
 app.post("/urls", (req, res) => {
+  const userID = req.cookies["user_id"];
   const key = generateRandomString();
-  urlDatabase[key] = req.body.longURL;
+  const longURL = req.body.longURL;
+
+  urlDatabase[key] = {
+    longURL,
+    userID
+  };
+
   res.redirect(`/urls/${key}`);
 });
 
 // get page for creating new url
 app.get("/urls/new", (req, res) => {
-  const userID = req.cookies["user_id"];
-  const templateVars = {
-    user: users[userID],
-  };
-  res.render("urls_new", templateVars);
+  if (loggedIn) {
+    const userID = req.cookies["user_id"];
+    const templateVars = {
+      user: users[userID],
+    };
+    res.render("urls_new", templateVars);
+  } else {
+    loginReminderMessage = "Please login before creating a new URL";
+    res.redirect("/login");
+  }
 });
 
 // delete existing short URL from homepage
@@ -89,25 +117,37 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 // get page for existing short URL from homepage
 app.get("/urls/:shortURL", (req, res) => {
   const userID = req.cookies["user_id"];
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL].longURL;
+
   const templateVars = {
     user: users[userID],
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL],
+    shortURL,
+    longURL
   };
+
   res.render("urls_show", templateVars);
 });
 
 // replace existing short URL on homepage with new long URL
 app.post("/urls/:shortURL", (req, res) => {
+  const userID = req.cookies["user_id"];
   const shortURL = req.params.shortURL;
   const newLongURL = req.body.longURL;
-  urlDatabase[shortURL] = newLongURL;
+
+  urlDatabase[shortURL] = {
+    longURL: newLongURL,
+    userID
+  };
+
   res.redirect("/urls");
 });
 
 // get long URL page from short URL
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL].longURL;
+
   res.redirect(longURL);
 });
 
@@ -115,6 +155,7 @@ app.get("/u/:shortURL", (req, res) => {
 // LOGIN AND LOGOUT
 // 'logout' and clear the appropriate user_id cookie
 app.post("/logout", (req, res) => {
+  loggedIn = false;
   res.clearCookie("user_id");
   res.redirect("/urls");
 });
@@ -150,6 +191,7 @@ app.post("/register", (req, res) => {
       email,
       password
     };
+    loggedIn = true;
     res.cookie("user_id", userID);
     res.redirect("/urls");
   }
@@ -160,10 +202,12 @@ app.get("/login", (req, res) => {
   const userID = req.cookies["user_id"];
   const templateVars = {
     user: users[userID],
-    loginErrorMessage
+    loginErrorMessage,
+    loginReminderMessage
   };
   res.render("urls_login", templateVars);
   loginErrorMessage = "";
+  loginReminderMessage = "";
 });
 
 // 'login' with existing email and password
@@ -185,6 +229,7 @@ app.post("/login", (req, res) => {
     loginErrorMessage = `Error ${res.statusCode}: Password does not match email`;
     res.redirect("back");
   } else {
+    loggedIn = true;
     res.cookie("user_id", user.id);
     res.redirect("/urls");
   }
