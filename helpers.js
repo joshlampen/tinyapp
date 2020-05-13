@@ -16,7 +16,7 @@ const getUserByEmail = (email, database) => {
   }
 };
 
-const getUserURLs = (userID, database) => { // this is the suggested urlsForUser(id) function
+const getUserURLs = (userID, database) => {
   const userURLs = {};
   for (const shortURL in database) {
     const longURL = database[shortURL].longURL;
