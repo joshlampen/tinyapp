@@ -83,7 +83,13 @@ app.get("/urls", (req, res) => {
 app.post("/urls", (req, res) => {
   const userID = req.cookies["user_id"];
   const key = generateRandomString();
-  const longURL = req.body.longURL;
+  let longURL = req.body.longURL;
+
+  if (longURL.split("").slice(0, 4).join("") === "www.") {
+    longURL = "http://" + longURL;
+  } else if (longURL.split("").slice(0, 7).join("") !== "http://") {
+    longURL = "http://www." + longURL;
+  }
 
   urlDatabase[key] = {
     longURL,
@@ -133,7 +139,13 @@ app.get("/urls/:shortURL", (req, res) => {
 app.post("/urls/:shortURL", (req, res) => {
   const userID = req.cookies["user_id"];
   const shortURL = req.params.shortURL;
-  const newLongURL = req.body.longURL;
+  let newLongURL = req.body.longURL;
+
+  if (newLongURL.split("").slice(0, 4).join("") === "www.") {
+    newLongURL = "http://" + newLongURL;
+  } else if (newLongURL.split("").slice(0, 7).join("") !== "http://") {
+    newLongURL = "http://www." + newLongURL;
+  }
 
   urlDatabase[shortURL] = {
     longURL: newLongURL,
