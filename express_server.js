@@ -15,6 +15,8 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
+const bcrypt = require("bcrypt");
+
 
 // constants --> move to other file
 let registerErrorMessage = "";
@@ -27,7 +29,7 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "example"
+    hashedPassword: "example"
   }
 };
 
@@ -205,6 +207,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
   if (!email || !password) {
     res.statusCode = 400;
@@ -219,7 +222,7 @@ app.post("/register", (req, res) => {
     users[userID] = {
       id: userID,
       email,
-      password
+      hashedPassword
     };
     loggedIn = true;
     res.cookie("user_id", userID);
@@ -254,7 +257,7 @@ app.post("/login", (req, res) => {
     res.statusCode = 403;
     loginErrorMessage = `Error ${res.statusCode}: Email cannot be found`;
     res.redirect("back");
-  } else if (user.password !== password) {
+  } else if (!bcrypt.compareSync(password, user.hashedPassword)) {
     res.statusCode = 403;
     loginErrorMessage = `Error ${res.statusCode}: Password does not match email`;
     res.redirect("back");
