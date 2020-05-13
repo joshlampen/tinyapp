@@ -14,7 +14,6 @@ const getUserByEmail = (email, database) => {
       return database[user];
     }
   }
-  return undefined;
 };
 
 const getUserURLs = (userID, database) => { // this is the suggested urlsForUser(id) function
