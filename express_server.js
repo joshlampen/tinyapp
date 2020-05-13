@@ -1,3 +1,6 @@
+const { generateRandomString, getUserByEmail, getUserURLs } = require("./helpers");
+const { resMessages, users, urlDatabase } = require("./constants");
+
 // imports and setup
 const express = require("express");
 const app = express();
@@ -17,65 +20,14 @@ const bcrypt = require("bcrypt");
 const cookieSession = require("cookie-session");
 app.use(cookieSession({
   name: "session",
-  keys: ["user_id"]
+  keys: ["userID"]
 }));
-
-
-// constants --> move to other file
-let registerErrorMessage = "";
-let loginErrorMessage = "";
-let loginReminderMessage = "";
-let urlErrorMessage = "";
-let loggedIn = false;
-
-const users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    hashedPassword: "example"
-  }
-};
-
-const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
-};
-
-const generateRandomString = () => {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let randomString = "";
-  for (let i = 1; i <= 6; i++) {
-    const randomNum = Math.floor(Math.random() * 62);
-    randomString += characters[randomNum];
-  }
-  return randomString;
-};
-
-const findUserByEmail = email => {
-  for (const user in users) {
-    if (users[user].email === email) {
-      return users[user];
-    }
-  }
-  return undefined;
-};
-
-const findUserURLs = userID => { // this is the suggested urlsForUser(id) function but I like this name better because it maintains the syntax of first word being a verb
-  const userURLs = {};
-  for (const shortURL in urlDatabase) {
-    const longURL = urlDatabase[shortURL].longURL;
-    if (urlDatabase[shortURL].userID === userID) {
-      userURLs[shortURL] = longURL;
-    }
-  }
-  return userURLs;
-};
 
 
 // get homepage
 app.get("/urls", (req, res) => {
-  const userID = req.session.user_id;
-  const userURLs = findUserURLs(userID);
+  const userID = req.session.userID;
+  const userURLs = getUserURLs(userID, urlDatabase);
 
   const templateVars = {
     user: users[userID],
@@ -87,7 +39,7 @@ app.get("/urls", (req, res) => {
 
 // post new url to homepage
 app.post("/urls", (req, res) => {
-  const userID = req.session.user_id;
+  const userID = req.session.userID;
   const key = generateRandomString();
   let longURL = req.body.longURL;
 
@@ -107,23 +59,23 @@ app.post("/urls", (req, res) => {
 
 // get page for creating new url
 app.get("/urls/new", (req, res) => {
-  if (loggedIn) {
-    const userID = req.session.user_id;
+  if (req.session.userID) {
+    const userID = req.session.userID;
     const templateVars = {
       user: users[userID],
-      urlErrorMessage
+      urlErrorMessage: resMessages.urlErrorMessage
     };
     res.render("urls_new", templateVars);
-    urlErrorMessage = "";
+    resMessages.urlErrorMessage = "";
   } else {
-    loginReminderMessage = "Please login to create a new URL";
+    resMessages.loginReminderMessage = "Please login to create a new URL";
     res.redirect("/login");
   }
 });
 
 // delete existing short URL from homepage
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const userID = req.session.user_id;
+  const userID = req.session.userID;
   const shortURL = req.params.shortURL;
 
   if (urlDatabase[shortURL].userID === userID) {
@@ -134,16 +86,16 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // get page for existing short URL from homepage
 app.get("/urls/:shortURL", (req, res) => {
-  const userID = req.session.user_id;
-  const userURLs = findUserURLs(userID);
+  const userID = req.session.userID;
+  const userURLs = getUserURLs(userID, urlDatabase);
   const shortURL = req.params.shortURL;
   const longURL = userURLs[shortURL];
 
-  if (!loggedIn) {
-    loginReminderMessage = "Please login to view your URL";
+  if (!req.session.userID) {
+    resMessages.loginReminderMessage = "Please login to view your URLs";
     res.redirect("/login");
   } else if (!longURL) {
-    urlErrorMessage = "Access to this URL is not permitted from your account\nYou can create your own URL here";
+    resMessages.urlErrorMessage = "Access to this URL is not permitted from your account\nYou can create your own URL here";
     res.redirect("/urls/new");
   } else {
     const templateVars = {
@@ -158,7 +110,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // replace existing short URL on homepage with new long URL
 app.post("/urls/:shortURL", (req, res) => {
-  const userID = req.session.user_id;
+  const userID = req.session.userID;
   const shortURL = req.params.shortURL;
   let newLongURL = req.body.longURL;
 
@@ -188,22 +140,21 @@ app.get("/u/:shortURL", (req, res) => {
 
 
 // LOGIN AND LOGOUT
-// 'logout' and clear the appropriate user_id cookie
+// 'logout' and clear the appropriate userID cookie
 app.post("/logout", (req, res) => {
-  loggedIn = false;
   req.session = null;
   res.redirect("/urls");
 });
 
 // get the 'register' page
 app.get("/register", (req, res) => {
-  const userID = req.session.user_id;
+  const userID = req.session.userID;
   const templateVars = {
     user: users[userID],
-    registerErrorMessage
+    registerErrorMessage: resMessages.registerErrorMessage
   };
   res.render("urls_register", templateVars);
-  registerErrorMessage = "";
+  resMessages.registerErrorMessage = "";
 });
 
 // register a new email and password from the 'register' page
@@ -214,11 +165,11 @@ app.post("/register", (req, res) => {
 
   if (!email || !password) {
     res.statusCode = 400;
-    registerErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
+    resMessages.registerErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
     res.redirect("back");
-  } else if (findUserByEmail(email)) {
+  } else if (getUserByEmail(email, users)) {
     res.statusCode = 400;
-    registerErrorMessage = `Error ${res.statusCode}: Email is already being used`;
+    resMessages.registerErrorMessage = `Error ${res.statusCode}: Email is already being used`;
     res.redirect("back");
   } else {
     const userID = generateRandomString();
@@ -227,46 +178,44 @@ app.post("/register", (req, res) => {
       email,
       hashedPassword
     };
-    loggedIn = true;
-    req.session.user_id = userID;
+    req.session.userID = userID;
     res.redirect("/urls");
   }
 });
 
 // get the 'login' page
 app.get("/login", (req, res) => {
-  const userID = req.session.user_id;
+  const userID = req.session.userID;
   const templateVars = {
     user: users[userID],
-    loginErrorMessage,
-    loginReminderMessage
+    loginErrorMessage: resMessages.loginErrorMessage,
+    loginReminderMessage: resMessages.loginReminderMessage
   };
   res.render("urls_login", templateVars);
-  loginErrorMessage = "";
-  loginReminderMessage = "";
+  resMessages.loginErrorMessage = "";
+  resMessages.loginReminderMessage = "";
 });
 
 // 'login' with existing email and password
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  const user = findUserByEmail(email);
+  const user = getUserByEmail(email, users);
 
   if (!email || !password) {
     res.statusCode = 400;
-    loginErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
+    resMessages.loginErrorMessage = `Error ${res.statusCode}: Please enter a valid email and password`;
     res.redirect("back");
   } else if (!user) {
     res.statusCode = 403;
-    loginErrorMessage = `Error ${res.statusCode}: Email cannot be found`;
+    resMessages.loginErrorMessage = `Error ${res.statusCode}: Email cannot be found`;
     res.redirect("back");
   } else if (!bcrypt.compareSync(password, user.hashedPassword)) {
     res.statusCode = 403;
-    loginErrorMessage = `Error ${res.statusCode}: Password does not match email`;
+    resMessages.loginErrorMessage = `Error ${res.statusCode}: Password does not match email`;
     res.redirect("back");
   } else {
-    loggedIn = true;
-    req.session.user_id = user.id;
+    req.session.userID = user.id;
     res.redirect("/urls");
   }
 });
