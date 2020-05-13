@@ -8,14 +8,17 @@ app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
-
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
 const bcrypt = require("bcrypt");
+
+const cookieSession = require("cookie-session");
+app.use(cookieSession({
+  name: "session",
+  keys: ["user_id"]
+}));
 
 
 // constants --> move to other file
@@ -71,7 +74,7 @@ const findUserURLs = userID => { // this is the suggested urlsForUser(id) functi
 
 // get homepage
 app.get("/urls", (req, res) => {
-  const userID = req.cookies["user_id"];
+  const userID = req.session.user_id;
   const userURLs = findUserURLs(userID);
 
   const templateVars = {
@@ -84,7 +87,7 @@ app.get("/urls", (req, res) => {
 
 // post new url to homepage
 app.post("/urls", (req, res) => {
-  const userID = req.cookies["user_id"];
+  const userID = req.session.user_id;
   const key = generateRandomString();
   let longURL = req.body.longURL;
 
@@ -105,7 +108,7 @@ app.post("/urls", (req, res) => {
 // get page for creating new url
 app.get("/urls/new", (req, res) => {
   if (loggedIn) {
-    const userID = req.cookies["user_id"];
+    const userID = req.session.user_id;
     const templateVars = {
       user: users[userID],
       urlErrorMessage
@@ -120,7 +123,7 @@ app.get("/urls/new", (req, res) => {
 
 // delete existing short URL from homepage
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const userID = req.cookies["user_id"];
+  const userID = req.session.user_id;
   const shortURL = req.params.shortURL;
 
   if (urlDatabase[shortURL].userID === userID) {
@@ -131,7 +134,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // get page for existing short URL from homepage
 app.get("/urls/:shortURL", (req, res) => {
-  const userID = req.cookies["user_id"];
+  const userID = req.session.user_id;
   const userURLs = findUserURLs(userID);
   const shortURL = req.params.shortURL;
   const longURL = userURLs[shortURL];
@@ -155,7 +158,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // replace existing short URL on homepage with new long URL
 app.post("/urls/:shortURL", (req, res) => {
-  const userID = req.cookies["user_id"];
+  const userID = req.session.user_id;
   const shortURL = req.params.shortURL;
   let newLongURL = req.body.longURL;
 
@@ -188,13 +191,13 @@ app.get("/u/:shortURL", (req, res) => {
 // 'logout' and clear the appropriate user_id cookie
 app.post("/logout", (req, res) => {
   loggedIn = false;
-  res.clearCookie("user_id");
+  req.session = null;
   res.redirect("/urls");
 });
 
 // get the 'register' page
 app.get("/register", (req, res) => {
-  const userID = req.cookies["user_id"];
+  const userID = req.session.user_id;
   const templateVars = {
     user: users[userID],
     registerErrorMessage
@@ -225,14 +228,14 @@ app.post("/register", (req, res) => {
       hashedPassword
     };
     loggedIn = true;
-    res.cookie("user_id", userID);
+    req.session.user_id = userID;
     res.redirect("/urls");
   }
 });
 
 // get the 'login' page
 app.get("/login", (req, res) => {
-  const userID = req.cookies["user_id"];
+  const userID = req.session.user_id;
   const templateVars = {
     user: users[userID],
     loginErrorMessage,
@@ -263,7 +266,7 @@ app.post("/login", (req, res) => {
     res.redirect("back");
   } else {
     loggedIn = true;
-    res.cookie("user_id", user.id);
+    req.session.user_id = user.id;
     res.redirect("/urls");
   }
 });
