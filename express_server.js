@@ -20,6 +20,7 @@ app.listen(PORT, () => {
 let registerErrorMessage = "";
 let loginErrorMessage = "";
 let loginReminderMessage = "";
+let urlErrorMessage = "";
 let loggedIn = false;
 
 const users = {
@@ -54,7 +55,7 @@ const findUserByEmail = email => {
   return undefined;
 };
 
-const findUserURLs = userID => {
+const findUserURLs = userID => { // this is the suggested urlsForUser(id) function but I like this name better because it maintains the syntax of first word being a verb
   const userURLs = {};
   for (const shortURL in urlDatabase) {
     const longURL = urlDatabase[shortURL].longURL;
@@ -105,34 +106,49 @@ app.get("/urls/new", (req, res) => {
     const userID = req.cookies["user_id"];
     const templateVars = {
       user: users[userID],
+      urlErrorMessage
     };
     res.render("urls_new", templateVars);
+    urlErrorMessage = "";
   } else {
-    loginReminderMessage = "Please login before creating a new URL";
+    loginReminderMessage = "Please login to create a new URL";
     res.redirect("/login");
   }
 });
 
 // delete existing short URL from homepage
 app.post("/urls/:shortURL/delete", (req, res) => {
-  const key = req.params.shortURL;
-  delete urlDatabase[key];
-  res.redirect("/urls");
+  const userID = req.cookies["user_id"];
+  const shortURL = req.params.shortURL;
+
+  if (urlDatabase[shortURL].userID === userID) {
+    delete urlDatabase[shortURL];
+    res.redirect("/urls");
+  }
 });
 
 // get page for existing short URL from homepage
 app.get("/urls/:shortURL", (req, res) => {
   const userID = req.cookies["user_id"];
+  const userURLs = findUserURLs(userID);
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL].longURL;
+  const longURL = userURLs[shortURL];
 
-  const templateVars = {
-    user: users[userID],
-    shortURL,
-    longURL
-  };
-
-  res.render("urls_show", templateVars);
+  if (!loggedIn) {
+    loginReminderMessage = "Please login to view your URL";
+    res.redirect("/login");
+  } else if (!longURL) {
+    urlErrorMessage = "Access to this URL is not permitted from your account\nYou can create your own URL here";
+    res.redirect("/urls/new");
+  } else {
+    const templateVars = {
+      user: users[userID],
+      shortURL,
+      longURL
+    };
+  
+    res.render("urls_show", templateVars);
+  }
 });
 
 // replace existing short URL on homepage with new long URL
@@ -147,12 +163,14 @@ app.post("/urls/:shortURL", (req, res) => {
     newLongURL = "http://www." + newLongURL;
   }
 
-  urlDatabase[shortURL] = {
-    longURL: newLongURL,
-    userID
-  };
-
-  res.redirect("/urls");
+  if (urlDatabase[shortURL].userID === userID) {
+    urlDatabase[shortURL] = {
+      longURL: newLongURL,
+      userID
+    };
+  
+    res.redirect("/urls");
+  }
 });
 
 // get long URL page from short URL
