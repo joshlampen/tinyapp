@@ -4,6 +4,9 @@ const { resMessages, urlDatabase } = require("../databases");
 const express = require("express");
 const deleteURL = express.Router();
 
+const methodOverride = require("method-override");
+deleteURL.use(methodOverride("_method"));
+
 const cookieSession = require("cookie-session");
 deleteURL.use(cookieSession({
   name: "session",
@@ -11,10 +14,10 @@ deleteURL.use(cookieSession({
 }));
 
 
-// router will manage POST requests directed at /urls/[shortURL]/delete
+// router will manage DELETE requests directed at /urls/[shortURL]
 
 // delete existing short URL from homepage
-deleteURL.post("/urls/:shortURL/delete", (req, res) => {
+deleteURL.delete("/urls/:shortURL", (req, res) => {
   const userID = req.session.userID;
   const shortURL = req.params.shortURL;
 

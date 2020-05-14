@@ -13,7 +13,7 @@
   <% if (user) { %>
     <div style="display: flex; flex-direction: row">
       <h6 style="color: white; margin: 0.6em 1em 0.4em 0em">Logged In As: <%= user.email %>!</h6>
-      <form class="form-inline" action="/logout" method="POST">
+      <form class="form-inline" action="/logout?_method=DELETE" method="POST">
         <div>
           <button type="logout" class="btn btn-success" style="width: 90px">Logout</button>
         </div>

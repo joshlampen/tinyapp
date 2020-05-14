@@ -5,6 +5,9 @@ const { resMessages, users, urlDatabase } = require("../databases");
 const express = require("express");
 const showURL = express.Router();
 
+const methodOverride = require("method-override");
+showURL.use(methodOverride("_method"));
+
 const bodyParser = require("body-parser");
 showURL.use(bodyParser.urlencoded({extended: true}));
 
@@ -15,7 +18,7 @@ showURL.use(cookieSession({
 }));
 
 
-// router will manage GET and POST requests directed at /urls/[shortURL]
+// router will manage GET and PUT requests directed at /urls/[shortURL]
 
 // get page for existing short URL from homepage
 showURL.get("/urls/:shortURL", (req, res) => {
@@ -46,7 +49,7 @@ showURL.get("/urls/:shortURL", (req, res) => {
 });
 
 // replace existing short URL on homepage with new long URL
-showURL.post("/urls/:shortURL", (req, res) => {
+showURL.put("/urls/:shortURL", (req, res) => {
   const userID = req.session.userID;
   const shortURL = req.params.shortURL;
   let newLongURL = req.body.longURL;
