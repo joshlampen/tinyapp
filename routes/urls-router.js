@@ -1,6 +1,6 @@
 // imports and setup
 const { generateRandomString, getUserURLs } = require("../helpers");
-const { users, urlDatabase } = require("../constants");
+const { resMessages, users, urlDatabase } = require("../constants");
 
 const express = require("express");
 const urls = express.Router();
@@ -22,12 +22,19 @@ urls.get("/urls", (req, res) => {
   const userID = req.session.userID;
   const userURLs = getUserURLs(userID, urlDatabase);
 
-  const templateVars = {
-    user: users[userID],
-    urls: userURLs
-  };
-
-  res.render("urls_index", templateVars);
+  if (userID) {
+    const templateVars = {
+      user: users[userID],
+      urls: userURLs,
+      urlErrorMessage: resMessages.urlErrorMessage
+    };
+  
+    res.render("urls_index", templateVars);
+    resMessages.urlErrorMessage = ""; // resets any error message after displaying it
+  } else {
+    resMessages.loginReminderMessage = "Please login to view your URLs";
+    res.redirect("/login");
+  }
 });
 
 // post new url to homepage
@@ -36,19 +43,24 @@ urls.post("/urls", (req, res) => {
   const key = generateRandomString();
   let longURL = req.body.longURL;
 
-  // ensure all long URL entries have the same format of "http://www.[...]"
-  if (longURL.split("").slice(0, 4).join("") === "www.") {
-    longURL = "http://" + longURL;
-  } else if (longURL.split("").slice(0, 7).join("") !== "http://") {
-    longURL = "http://www." + longURL;
+  if (userID) {
+    // ensure all long URL entries have the same format of "http://www.[...]"
+    if (longURL.split("").slice(0, 4).join("") === "www.") {
+      longURL = "http://" + longURL;
+    } else if (longURL.split("").slice(0, 7).join("") !== "http://") {
+      longURL = "http://www." + longURL;
+    }
+  
+    urlDatabase[key] = {
+      longURL,
+      userID
+    };
+  
+    res.redirect(`/urls/${key}`);
+  } else {
+    resMessages.loginReminderMessage = "Please login to create a new URL";
+    res.redirect("/login");
   }
-
-  urlDatabase[key] = {
-    longURL,
-    userID
-  };
-
-  res.redirect(`/urls/${key}`);
 });
 
 

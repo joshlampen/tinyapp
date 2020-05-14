@@ -1,5 +1,5 @@
 // imports and setup
-const { urlDatabase } = require("../constants");
+const { resMessages, urlDatabase } = require("../constants");
 
 const express = require("express");
 const deleteURL = express.Router();
@@ -18,7 +18,14 @@ deleteURL.post("/urls/:shortURL/delete", (req, res) => {
   const userID = req.session.userID;
   const shortURL = req.params.shortURL;
 
-  if (urlDatabase[shortURL].userID === userID) { // ensure that only the owner of the url can delete it
+  // manage edge cases: user is not logged in, user is logged in but does not have permission to delete the URL
+  if (!userID) {
+    resMessages.loginReminderMessage = "Please login to manage your URLs";
+    res.redirect("/login");
+  } else if (urlDatabase[shortURL].userID !== userID) {
+    resMessages.urlErrorMessage = "Error: You do not have permission to delete that URL";
+    res.redirect("/urls");
+  } else {
     delete urlDatabase[shortURL];
     res.redirect("/urls");
   }

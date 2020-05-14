@@ -23,13 +23,17 @@ const bcrypt = require("bcrypt");
 register.get("/register", (req, res) => {
   const userID = req.session.userID;
 
-  const templateVars = {
-    user: users[userID],
-    registerErrorMessage: resMessages.registerErrorMessage
-  };
-
-  res.render("urls_register", templateVars);
-  resMessages.registerErrorMessage = ""; // resets any error message after displaying it
+  if (userID) {
+    res.redirect("/urls");
+  } else {
+    const templateVars = {
+      user: users[userID],
+      registerErrorMessage: resMessages.registerErrorMessage
+    };
+  
+    res.render("urls_register", templateVars);
+    resMessages.registerErrorMessage = ""; // resets any error message after displaying it
+  }
 });
 
 // register a new email and password from the 'register' page

@@ -10,9 +10,14 @@ const getURL = express.Router();
 // get long URL page from short URL
 getURL.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL].longURL;
 
-  res.redirect(longURL);
+  if (!urlDatabase[shortURL]) { // ensure an error message is sent if the URL does not exist
+    res.send("Error: URL does not exist");
+    res.end();
+  } else {
+    const longURL = urlDatabase[shortURL].longURL;
+    res.redirect(longURL);
+  }
 });
 
 

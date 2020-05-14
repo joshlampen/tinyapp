@@ -15,14 +15,13 @@ newURL.use(cookieSession({
 
 // get page for creating new url
 newURL.get("/urls/new", (req, res) => {
-  if (req.session.userID) {
-    const userID = req.session.userID;
+  const userID = req.session.userID;
+  if (userID) {
     const templateVars = {
       user: users[userID],
       urlErrorMessage: resMessages.urlErrorMessage
     };
     res.render("urls_new", templateVars);
-    resMessages.urlErrorMessage = "";
   } else {
     resMessages.loginReminderMessage = "Please login to create a new URL";
     res.redirect("/login");

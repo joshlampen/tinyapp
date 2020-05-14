@@ -23,15 +23,19 @@ const bcrypt = require("bcrypt");
 login.get("/login", (req, res) => {
   const userID = req.session.userID;
 
-  const templateVars = {
-    user: users[userID],
-    loginErrorMessage: resMessages.loginErrorMessage,
-    loginReminderMessage: resMessages.loginReminderMessage
-  };
-
-  res.render("urls_login", templateVars);
-  resMessages.loginErrorMessage = ""; // resets any error message(s) after displaying it
-  resMessages.loginReminderMessage = "";
+  if (userID) {
+    res.redirect("/urls");
+  } else {
+    const templateVars = {
+      user: users[userID],
+      loginErrorMessage: resMessages.loginErrorMessage,
+      loginReminderMessage: resMessages.loginReminderMessage
+    };
+  
+    res.render("urls_login", templateVars);
+    resMessages.loginErrorMessage = ""; // resets any error message(s) after displaying it
+    resMessages.loginReminderMessage = "";
+  }
 });
 
 // 'login' with existing email and password
