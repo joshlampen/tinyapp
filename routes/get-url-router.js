@@ -31,7 +31,7 @@ getURL.get("/u/:shortURL", (req, res) => {
       urlDatabase[shortURL].uniqueVisitors++;
     }
 
-    urlDatabase[shortURL].hits++;
+    urlDatabase[shortURL].visits++;
     
     const longURL = urlDatabase[shortURL].longURL;
     res.redirect(longURL);

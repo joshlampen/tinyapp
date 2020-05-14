@@ -19,7 +19,7 @@ const urlDatabase = {
   // b6UTxQ: {
   // longURL: "https://www.tsn.ca",
   // userID: "aJ48lW",
-  // hits: 0,
+  // visits: 0,
   // uniqueVisitors: 0
   // dateMade: May 14, 2020
   // }

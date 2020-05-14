@@ -56,14 +56,14 @@ const getUserURLs = (userID, database) => {
   const userURLs = {};
   for (const shortURL in database) {
     const longURL = database[shortURL].longURL;
-    const hits = database[shortURL].hits;
+    const visits = database[shortURL].visits;
     const uniqueVisitors = database[shortURL].uniqueVisitors;
     const dateMade = database[shortURL].dateMade;
 
     if (database[shortURL].userID === userID) {
       userURLs[shortURL] = {
         longURL,
-        hits,
+        visits,
         uniqueVisitors,
         dateMade
       };

@@ -58,7 +58,7 @@ urls.post("/urls", (req, res) => {
     urlDatabase[shortURL] = {
       longURL,
       userID,
-      hits: 0,
+      visits: 0,
       uniqueVisitors: 0,
       dateMade
     };
