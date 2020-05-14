@@ -18,7 +18,7 @@ showURL.use(cookieSession({
 }));
 
 
-// router will manage GET and PUT requests directed at /urls/[shortURL]
+// router will manage GET and PATCH requests directed at /urls/[shortURL]
 
 // get page for existing short URL from homepage
 showURL.get("/urls/:shortURL", (req, res) => {
@@ -49,7 +49,7 @@ showURL.get("/urls/:shortURL", (req, res) => {
 });
 
 // replace existing short URL on homepage with new long URL
-showURL.put("/urls/:shortURL", (req, res) => {
+showURL.patch("/urls/:shortURL", (req, res) => {
   const userID = req.session.userID;
   const shortURL = req.params.shortURL;
   let newLongURL = req.body.longURL;
