@@ -28,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        <% for (let shortURL in urls) { %>
+        <% for (const shortURL in urls) { %>
           <tr>
             <td><%= shortURL %></td>
             <td><%= urls[shortURL].longURL %></td>

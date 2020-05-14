@@ -1,6 +1,6 @@
 // imports and setup
 const { getUserURLs } = require("../helpers");
-const { resMessages, users, urlDatabase } = require("../databases");
+const { resMessages, users, urlDatabase, urlVisitors } = require("../databases");
 
 const express = require("express");
 const showURL = express.Router();
@@ -26,6 +26,7 @@ showURL.get("/urls/:shortURL", (req, res) => {
   const userURLs = getUserURLs(userID, urlDatabase);
   const shortURL = req.params.shortURL;
   const shortURLInfo = userURLs[shortURL];
+  const urlVisitorInfo = urlVisitors[shortURL];
 
   // manage edge cases: short URL does not exist, user is not logged in, short URL does not belong to the user
   if (!urlDatabase[shortURL]) {
@@ -41,7 +42,8 @@ showURL.get("/urls/:shortURL", (req, res) => {
     const templateVars = {
       user: users[userID],
       shortURL,
-      shortURLInfo
+      shortURLInfo,
+      urlVisitorInfo
     };
   
     res.render("urls_show", templateVars);

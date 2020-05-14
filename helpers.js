@@ -1,8 +1,12 @@
 const dateFormat = require('dateformat');
 
+const getTime = () => {
+  const time = dateFormat(new Date(), "UTC: h:MM TT Z"); // the above import enables this type of formatting
+  return time;
+};
+
 const getDate = () => {
-  dateFormat.masks.myFormat = 'mmmm dd, yyyy'; // the above import enables this type of formatting
-  const date = dateFormat(new Date(), "myFormat");
+  const date = dateFormat(new Date(), "mmmm dd, yyyy");
   return date;
 };
 
@@ -28,6 +32,16 @@ const getIP = req => { // IP will be retrieved using the client's request
     ipAddress = req.connection.remoteAddress;
   }
   return ipAddress;
+};
+
+// the below function checks if a given IP address has visited a given short URL
+const getURLVisitor = (ipAddress, shortURL, database) => {
+  for (const visitor of database[shortURL]) {
+    if (visitor.ipAddress === ipAddress) {
+      return true;
+    }
+  }
+  return false;
 };
 
 const getUserByEmail = (email, database) => {
@@ -59,4 +73,4 @@ const getUserURLs = (userID, database) => {
 };
 
 
-module.exports = { getDate, generateRandomString, getIP, getUserByEmail, getUserURLs };
+module.exports = { getTime, getDate, generateRandomString, getIP, getURLVisitor, getUserByEmail, getUserURLs };

@@ -19,9 +19,32 @@
       <h5 class="card-title">TinyURL for: <%= shortURLInfo.longURL %></h5>
       <p class="card-text">Short URL: <a href="/u/<%= shortURL %>" target="_blank"><%= shortURL %></a></p>
       <p class="card-text" style="margin: 2em 0em 0em 0em">Hits: </a><%= shortURLInfo.hits %></p>
-      <p class="card-text" style="margin: 0em">Unique Visitors: </a><%= shortURLInfo.uniqueVisitors %></p>
       <p class="card-text" style="margin: 0em">Date Created: </a><%= shortURLInfo.dateMade %></p>
+      <p class="card-text" style="margin: 2em 0em 0em 0em">Unique Visitors: </a><%= shortURLInfo.uniqueVisitors %></p>
     </div>
+    
+  <% if (urlVisitorInfo.length !== 0) { %>
+    <div style="display: flex; justify-content: center; font-size: 14px">
+      <table class="table" style="margin: 0em 0em 1em 0em; width: 400px;">
+        <thead>
+          <tr>
+            <th scope="col">Visitor ID</th>
+            <th scope="col">Visit Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (const visitor of urlVisitorInfo) { %>
+            <tr>
+              <td><%= visitor.visitorID %></td>
+              <td>
+                <%= visitor.visitTime %><br><%= visitor.visitDate %>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
 
     <div class="card-footer text-muted"></div>
 

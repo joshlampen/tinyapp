@@ -26,8 +26,11 @@ const urlDatabase = {
 };
 
 const urlVisitors = {
-  // entries are an array of IP visitors for each short URL, as seen in the example entry below:
-  // b6UTxQ: ['::ffff:10.0.2.2', '[another IP]', '[another IP]']
+  // entries are an array of objects for each short URL, with each object containing the IP, visitor ID, and visit time - example below:
+  // b6UTxQ: [
+  // {ipAddress: '::ffff:10.0.2.2', visitorID: 'jU8hn1', visitTime: '2:29PM May 14, 2020'}
+  // { ... }
+  // ]
 };
 
 module.exports = { resMessages, users, urlDatabase, urlVisitors };
