@@ -1,5 +1,5 @@
 // imports and setup
-const { resMessages, urlDatabase } = require("../constants");
+const { resMessages, urlDatabase } = require("../databases");
 
 const express = require("express");
 const deleteURL = express.Router();

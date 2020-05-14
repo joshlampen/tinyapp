@@ -16,6 +16,20 @@ const generateRandomString = () => {
   return randomString;
 };
 
+// the below function was based on this Github post: https://gist.github.com/qiao/1626318
+const getIP = req => { // IP will be retrieved using the client's request
+  let ipAddress;
+  let forwardedIPs = req.header('x-forwarded-for'); // request may be forwarded from local web server
+
+  // the header may return multiple IPs (in string form); the first one (the client IP) will be taken regardless
+  if (forwardedIPs) {
+    ipAddress = forwardedIPs.split(',')[0];
+  } else if (!ipAddress) { // if the request was not forwarded, it came from the remote address
+    ipAddress = req.connection.remoteAddress;
+  }
+  return ipAddress;
+};
+
 const getUserByEmail = (email, database) => {
   for (const user in database) {
     if (database[user].email === email) {
@@ -44,4 +58,5 @@ const getUserURLs = (userID, database) => {
   return userURLs;
 };
 
-module.exports = { getDate, generateRandomString, getUserByEmail, getUserURLs };
+
+module.exports = { getDate, generateRandomString, getIP, getUserByEmail, getUserURLs };

@@ -1,6 +1,6 @@
 // imports and setup
 const { getDate, generateRandomString, getUserURLs } = require("../helpers");
-const { resMessages, users, urlDatabase } = require("../constants");
+const { resMessages, users, urlDatabase, urlVisitors } = require("../databases");
 
 const express = require("express");
 const urls = express.Router();
@@ -59,6 +59,8 @@ urls.post("/urls", (req, res) => {
       uniqueVisitors: 0,
       dateMade
     };
+
+    urlVisitors[shortURL] = []; // initializes short URL in the database for future visitors
   
     res.redirect(`/urls/${shortURL}`);
   } else {

@@ -6,7 +6,7 @@ const resMessages = {
 };
 
 const users = {
-  // Example entry below
+  // example entry below:
   // "userRandomID": {
   //   id: "userRandomID",
   //   email: "user@example.com",
@@ -15,7 +15,7 @@ const users = {
 };
 
 const urlDatabase = {
-  // Example entry below
+  // example entry below:
   // b6UTxQ: {
   // longURL: "https://www.tsn.ca",
   // userID: "aJ48lW",
@@ -25,4 +25,9 @@ const urlDatabase = {
   // }
 };
 
-module.exports = { resMessages, users, urlDatabase };
+const urlVisitors = {
+  // entries are an array of IP visitors for each short URL, as seen in the example entry below:
+  // b6UTxQ: ['::ffff:10.0.2.2', '[another IP]', '[another IP]']
+};
+
+module.exports = { resMessages, users, urlDatabase, urlVisitors };

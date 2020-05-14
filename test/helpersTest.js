@@ -19,19 +19,22 @@ const testURLDatabase = {
     longURL: "https://www.firstexample.com",
     userID: "aJ48lW",
     hits: 5,
-    uniqueVisitors: 3
+    uniqueVisitors: 3,
+    dateMade: "May 14, 2020"
   },
   i3BoGr: {
     longURL: "https://www.secondexample.com",
     userID: "b5o2xJ",
     hits: 10,
-    uniqueVisitors: 6
+    uniqueVisitors: 6,
+    dateMade: "May 14, 2020"
   },
   b5oR46: {
     longURL: "https://www.thirdexample.com",
     userID: "aJ48lW",
     hits: 6,
-    uniqueVisitors: 2
+    uniqueVisitors: 2,
+    dateMade: "May 14, 2020"
   }
 };
 
@@ -59,12 +62,14 @@ describe('getUserURLs', function() {
       b6UTxQ: {
         longURL: "https://www.firstexample.com",
         hits: 5,
-        uniqueVisitors: 3
+        uniqueVisitors: 3,
+        dateMade: "May 14, 2020"
       },
       b5oR46: {
         longURL: "https://www.thirdexample.com",
         hits: 6,
-        uniqueVisitors: 2
+        uniqueVisitors: 2,
+        dateMade: "May 14, 2020"
       }
     };
     assert.deepEqual(userURLs, expectedOutput);

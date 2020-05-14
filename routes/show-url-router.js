@@ -1,6 +1,6 @@
 // imports and setup
 const { getUserURLs } = require("../helpers");
-const { resMessages, users, urlDatabase } = require("../constants");
+const { resMessages, users, urlDatabase } = require("../databases");
 
 const express = require("express");
 const showURL = express.Router();

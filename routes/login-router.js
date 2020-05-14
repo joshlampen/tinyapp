@@ -1,6 +1,6 @@
 // imports and setup
 const { getUserByEmail } = require("../helpers");
-const { resMessages, users } = require("../constants");
+const { resMessages, users } = require("../databases");
 
 const express = require("express");
 const login = express.Router();
