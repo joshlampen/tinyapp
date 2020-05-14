@@ -44,7 +44,10 @@ urls.post("/urls", (req, res) => {
   let longURL = req.body.longURL;
   const dateMade = getDate();
 
-  if (userID) {
+  if (!userID) {
+    resMessages.loginReminderMessage = "Please login to create a new URL";
+    res.redirect("/login");
+  } else {
     // ensure all long URL entries have the same format of "http://www.[...]"
     if (longURL.split("").slice(0, 4).join("") === "www.") {
       longURL = "http://" + longURL;
@@ -63,9 +66,6 @@ urls.post("/urls", (req, res) => {
     urlVisitors[shortURL] = []; // initializes short URL in the database for future visitors
   
     res.redirect(`/urls/${shortURL}`);
-  } else {
-    resMessages.loginReminderMessage = "Please login to create a new URL";
-    res.redirect("/login");
   }
 });
 
