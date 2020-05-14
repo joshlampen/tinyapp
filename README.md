@@ -6,8 +6,13 @@ Users can manage their shortened URLs and track data such as hits and unique vis
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["Login Page"](https://github.com/JoshLampen/tinyapp/blob/master/docs/login-page.png?raw=true)
+
+!["URLs Page"](https://github.com/JoshLampen/tinyapp/blob/master/docs/urls-page.png?raw=true)
+
+!["New URL Page"](https://github.com/JoshLampen/tinyapp/blob/master/docs/new-url-page.png?raw=true)
+
+!["Show URL Page"](https://github.com/JoshLampen/tinyapp/blob/master/docs/show-url-page.png?raw=true)
 
 ## Dependencies
 
