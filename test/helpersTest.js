@@ -1,5 +1,5 @@
 const { assert } = require('chai');
-const { getUserByEmail, getUserURLs } = require('../helpers.js');
+const { getURLVisitor, getUserByEmail, getUserURLs } = require('../helpers.js');
 
 const testUsers = {
   "userRandomID": {
@@ -37,6 +37,27 @@ const testURLDatabase = {
     dateMade: "May 14, 2020"
   }
 };
+
+const urlVisitors = {
+  b6UTxQ: [
+    {ipAddress: "::ffff:10.0.2.2", visitorID: "jU8hn1", visitTime: "10:29PM UTDC", visitDate: "May 14, 2020"},
+    {ipAddress: "172.16.254.1", visitorID: "sI9jB3", visitTime: "2:14PM UTDC", visitDate: "May 15, 2020"}
+  ]
+};
+
+describe('getURLVisitor', function() {
+  it('should return true if a given IP address has visited the short URL', function() {
+    const ipAddress = "::ffff:10.0.2.2";
+    const shortURL = "b6UTxQ";
+    assert.strictEqual(getURLVisitor(ipAddress, shortURL, urlVisitors), true);
+  });
+
+  it('should return false if a given IP address has not visited the short URL', function() {
+    const ipAddress = "::gggg:10.0.2.2";
+    const shortURL = "b6UTxQ";
+    assert.strictEqual(getURLVisitor(ipAddress, shortURL, urlVisitors), false);
+  });
+});
 
 describe('getUserByEmail', function() {
   it('should return the appropriate user if the email is within the database', function() {

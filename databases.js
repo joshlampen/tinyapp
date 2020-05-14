@@ -28,7 +28,7 @@ const urlDatabase = {
 const urlVisitors = {
   // entries are an array of objects for each short URL, with each object containing the IP, visitor ID, and visit time - example below:
   // b6UTxQ: [
-  // {ipAddress: '::ffff:10.0.2.2', visitorID: 'jU8hn1', visitTime: '2:29PM May 14, 2020'}
+  // {ipAddress: '::ffff:10.0.2.2', visitorID: 'jU8hn1', visitTime: '10:29PM UTC', visitDate: 'May 14, 2020'}
   // { ... }
   // ]
 };
