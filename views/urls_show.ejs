@@ -16,8 +16,11 @@
   <div class="card text-center">
     <div class="card-header"></div>
     <div class="card-body">
-      <h5 class="card-title">TinyURL for: <%= longURL %></h5>
+      <h5 class="card-title">TinyURL for: <%= shortURLInfo.longURL %></h5>
       <p class="card-text">Short URL: <a href="/u/<%= shortURL %>" target="_blank"><%= shortURL %></a></p>
+      <p class="card-text" style="margin: 2em 0em 0em 0em">Hits: </a><%= shortURLInfo.hits %></p>
+      <p class="card-text" style="margin: 0em">Unique Visitors: </a><%= shortURLInfo.uniqueVisitors %></p>
+      <p class="card-text" style="margin: 0em">Date Created: </a><%= shortURLInfo.dateMade %></p>
     </div>
 
     <div class="card-footer text-muted"></div>

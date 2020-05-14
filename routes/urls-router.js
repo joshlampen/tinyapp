@@ -1,5 +1,5 @@
 // imports and setup
-const { generateRandomString, getUserURLs } = require("../helpers");
+const { getDate, generateRandomString, getUserURLs } = require("../helpers");
 const { resMessages, users, urlDatabase } = require("../constants");
 
 const express = require("express");
@@ -40,8 +40,9 @@ urls.get("/urls", (req, res) => {
 // post new url to homepage
 urls.post("/urls", (req, res) => {
   const userID = req.session.userID;
-  const key = generateRandomString();
+  const shortURL = generateRandomString();
   let longURL = req.body.longURL;
+  const dateMade = getDate();
 
   if (userID) {
     // ensure all long URL entries have the same format of "http://www.[...]"
@@ -51,12 +52,15 @@ urls.post("/urls", (req, res) => {
       longURL = "http://www." + longURL;
     }
   
-    urlDatabase[key] = {
+    urlDatabase[shortURL] = {
       longURL,
-      userID
+      userID,
+      hits: 0,
+      uniqueVisitors: 0,
+      dateMade
     };
   
-    res.redirect(`/urls/${key}`);
+    res.redirect(`/urls/${shortURL}`);
   } else {
     resMessages.loginReminderMessage = "Please login to create a new URL";
     res.redirect("/login");

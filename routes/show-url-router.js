@@ -22,7 +22,7 @@ showURL.get("/urls/:shortURL", (req, res) => {
   const userID = req.session.userID;
   const userURLs = getUserURLs(userID, urlDatabase);
   const shortURL = req.params.shortURL;
-  const longURL = userURLs[shortURL];
+  const shortURLInfo = userURLs[shortURL];
 
   // manage edge cases: short URL does not exist, user is not logged in, short URL does not belong to the user
   if (!urlDatabase[shortURL]) {
@@ -31,14 +31,14 @@ showURL.get("/urls/:shortURL", (req, res) => {
   } else if (!req.session.userID) {
     resMessages.loginReminderMessage = "Please login to view your URLs";
     res.redirect("/login");
-  } else if (!longURL) {
+  } else if (!shortURLInfo) {
     resMessages.urlErrorMessage = "Error: Access to this URL is not permitted from your account";
     res.redirect("/urls");
   } else {
     const templateVars = {
       user: users[userID],
       shortURL,
-      longURL
+      shortURLInfo
     };
   
     res.render("urls_show", templateVars);
@@ -66,10 +66,8 @@ showURL.post("/urls/:shortURL", (req, res) => {
       newLongURL = "http://www." + newLongURL;
     }
     
-    urlDatabase[shortURL] = {
-      longURL: newLongURL,
-      userID
-    };
+    // in my view, the long URL should be updated without resetting the other properties of the short URL
+    urlDatabase[shortURL].longURL = newLongURL;
   
     res.redirect("/urls");
   }

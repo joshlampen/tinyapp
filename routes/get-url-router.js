@@ -15,6 +15,8 @@ getURL.get("/u/:shortURL", (req, res) => {
     res.send("Error: URL does not exist");
     res.end();
   } else {
+    urlDatabase[shortURL].hits++;
+    
     const longURL = urlDatabase[shortURL].longURL;
     res.redirect(longURL);
   }

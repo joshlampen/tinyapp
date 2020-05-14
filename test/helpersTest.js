@@ -15,9 +15,24 @@ const testUsers = {
 };
 
 const testURLDatabase = {
-  b6UTxQ: { longURL: "https://www.firstexample.com", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.secondexample.com", userID: "b5o2xJ" },
-  b5oR46: { longURL: "https://www.thirdexample.com", userID: "aJ48lW" }
+  b6UTxQ: {
+    longURL: "https://www.firstexample.com",
+    userID: "aJ48lW",
+    hits: 5,
+    uniqueVisitors: 3
+  },
+  i3BoGr: {
+    longURL: "https://www.secondexample.com",
+    userID: "b5o2xJ",
+    hits: 10,
+    uniqueVisitors: 6
+  },
+  b5oR46: {
+    longURL: "https://www.thirdexample.com",
+    userID: "aJ48lW",
+    hits: 6,
+    uniqueVisitors: 2
+  }
 };
 
 describe('getUserByEmail', function() {
@@ -41,8 +56,16 @@ describe('getUserURLs', function() {
   it('should return all short URLs that match the userID', function() {
     const userURLs = getUserURLs("aJ48lW", testURLDatabase);
     const expectedOutput = {
-      b6UTxQ: "https://www.firstexample.com",
-      b5oR46: "https://www.thirdexample.com"
+      b6UTxQ: {
+        longURL: "https://www.firstexample.com",
+        hits: 5,
+        uniqueVisitors: 3
+      },
+      b5oR46: {
+        longURL: "https://www.thirdexample.com",
+        hits: 6,
+        uniqueVisitors: 2
+      }
     };
     assert.deepEqual(userURLs, expectedOutput);
   });

@@ -20,6 +20,9 @@
         <tr>
           <th scope="col">Short URL</th>
           <th scope="col">Long URL</th>
+          <th scope="col">Hits</th>
+          <th scope="col">Unique Visitors</th>
+          <th scope="col">Date Created</th>
           <th scope="col">Edit</th>
           <th scope="col">Delete</th>
         </tr>
@@ -28,7 +31,10 @@
         <% for (let shortURL in urls) { %>
           <tr>
             <td><%= shortURL %></td>
-            <td><%= urls[shortURL] %></td>
+            <td><%= urls[shortURL].longURL %></td>
+            <td><%= urls[shortURL].hits %></td>
+            <td><%= urls[shortURL].uniqueVisitors %></td>
+            <td><%= urls[shortURL].dateMade %></td>
             <td>
               <form method="GET" action="/urls/<%= shortURL %>">
                 <button type="edit" class="btn btn-default" style="color: rgb(0, 119, 255); border-color: rgb(0, 119, 255); width: 75px">Edit</button>

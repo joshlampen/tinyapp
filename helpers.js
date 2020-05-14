@@ -1,3 +1,11 @@
+const dateFormat = require('dateformat');
+
+const getDate = () => {
+  dateFormat.masks.myFormat = 'mmmm dd, yyyy'; // the above import enables this type of formatting
+  const date = dateFormat(new Date(), "myFormat");
+  return date;
+};
+
 const generateRandomString = () => {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let randomString = "";
@@ -20,11 +28,20 @@ const getUserURLs = (userID, database) => {
   const userURLs = {};
   for (const shortURL in database) {
     const longURL = database[shortURL].longURL;
+    const hits = database[shortURL].hits;
+    const uniqueVisitors = database[shortURL].uniqueVisitors;
+    const dateMade = database[shortURL].dateMade;
+
     if (database[shortURL].userID === userID) {
-      userURLs[shortURL] = longURL;
+      userURLs[shortURL] = {
+        longURL,
+        hits,
+        uniqueVisitors,
+        dateMade
+      };
     }
   }
   return userURLs;
 };
 
-module.exports = { generateRandomString, getUserByEmail, getUserURLs };
+module.exports = { getDate, generateRandomString, getUserByEmail, getUserURLs };
