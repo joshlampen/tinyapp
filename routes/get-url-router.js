@@ -18,8 +18,7 @@ getURL.get("/u/:shortURL", (req, res) => {
     res.send("Error: URL does not exist");
     res.end();
   } else {
-    // if the user has not visited the short URL before, add the IP to the database and increment the unique visitors counter
-    if (!urlVisitors[shortURL].includes(ipAddress)) {
+    if (!urlVisitors[shortURL].includes(ipAddress)) { // if the user has not visited the short URL before, add the IP to the visitors database and increment the counter
       urlVisitors[shortURL].push(ipAddress);
       urlDatabase[shortURL].uniqueVisitors++;
     }
