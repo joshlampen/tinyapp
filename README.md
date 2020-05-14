@@ -26,6 +26,7 @@ Users can manage their shortened URLs and track data such as hits and unique vis
 - bcrypt
 - body-parser
 - cookie-session
+- method-override
 - dateformat
 
 ## Getting Started
