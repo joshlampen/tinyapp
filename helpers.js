@@ -36,8 +36,8 @@ const getIP = req => { // IP will be retrieved using the client's request
 
 // the below function checks if a given IP address has visited a given short URL
 const getURLVisitor = (ipAddress, shortURL, database) => {
-  for (const visitor of database[shortURL]) {
-    if (visitor.ipAddress === ipAddress) {
+  for (const visitor in database[shortURL]) {
+    if (database[shortURL][visitor].ipAddress === ipAddress) {
       return true;
     }
   }

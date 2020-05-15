@@ -63,7 +63,7 @@ urls.post("/urls", (req, res) => {
       dateMade
     };
 
-    urlVisitors[shortURL] = []; // initializes short URL in the database for future visitors
+    urlVisitors[shortURL] = {}; // initializes short URL in the database for future visitors
   
     res.redirect(`/urls/${shortURL}`);
   }

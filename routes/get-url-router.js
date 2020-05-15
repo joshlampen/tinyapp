@@ -21,12 +21,11 @@ getURL.get("/u/:shortURL", (req, res) => {
     res.end();
   } else {
     if (!getURLVisitor(ipAddress, shortURL, urlVisitors)) { // if the user has not visited the short URL before, add the IP to the visitors database and increment the counter
-      urlVisitors[shortURL].push({
+      urlVisitors[shortURL][visitorID] = {
         ipAddress,
-        visitorID,
         visitTime,
         visitDate
-      });
+      };
 
       urlDatabase[shortURL].uniqueVisitors++;
     }

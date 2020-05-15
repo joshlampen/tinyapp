@@ -23,7 +23,7 @@
       <p class="card-text" style="margin: 2em 0em 0em 0em">Unique Visitors: </a><%= shortURLInfo.uniqueVisitors %></p>
     </div>
     
-  <% if (urlVisitorInfo.length !== 0) { %>
+  <% if (Object.keys(urlVisitorInfo).length > 0) { %>
     <div style="display: flex; justify-content: center; font-size: 14px">
       <table class="table" style="margin: 0em 0em 1em 0em; width: 400px;">
         <thead>
@@ -33,11 +33,11 @@
           </tr>
         </thead>
         <tbody>
-          <% for (const visitor of urlVisitorInfo) { %>
+          <% for (const visitor in urlVisitorInfo) { %>
             <tr>
-              <td><%= visitor.visitorID %></td>
+              <td><%= visitor %></td>
               <td>
-                <%= visitor.visitTime %><br><%= visitor.visitDate %>
+                <%= urlVisitorInfo[visitor].visitTime %><br><%= urlVisitorInfo[visitor].visitDate %>
               </td>
             </tr>
           <% } %>
