@@ -4,6 +4,8 @@ TinyApp is a full-stack web application built with Node and Express that allows 
 
 Users can manage their shortened URLs and track data such as visits and unique visitors.
 
+*I note the use of inline CSS for this project. Moving the CSS to a separate file, and expanding its use, will be a key focus for my next project.*
+
 ## Final Product
 
 ### Login Page
