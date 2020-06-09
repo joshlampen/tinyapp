@@ -14,7 +14,7 @@ register.use(cookieSession({
   keys: ["userID"]
 }));
 
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 
 
 // router will manage GET and POST requests directed at /register
@@ -40,7 +40,7 @@ register.get("/register", (req, res) => {
 register.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  // const hashedPassword = bcrypt.hashSync(password, 10);
 
   // manage edge cases: empty email or password, email already used
   if (!email || !password) {
@@ -57,7 +57,7 @@ register.post("/register", (req, res) => {
     users[userID] = {
       id: userID,
       email,
-      hashedPassword
+      password
     };
 
     req.session.userID = userID;

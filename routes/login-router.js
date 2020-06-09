@@ -14,7 +14,7 @@ login.use(cookieSession({
   keys: ["userID"]
 }));
 
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 
 
 // router will manage GET and POST requests directed at /login
@@ -53,7 +53,8 @@ login.post("/login", (req, res) => {
     res.statusCode = 403;
     resMessages.loginErrorMessage = `Error ${res.statusCode}: Email cannot be found`;
     res.redirect("back");
-  } else if (!bcrypt.compareSync(password, user.hashedPassword)) {
+  // } else if (!bcrypt.compareSync(password, user.hashedPassword)) {
+  } else if (password !== user.password) {
     res.statusCode = 403;
     resMessages.loginErrorMessage = `Error ${res.statusCode}: Password does not match email`;
     res.redirect("back");

@@ -14,7 +14,7 @@ const app = express();
 app.use(index, register, login, logout, urls, newURL, showURL, deleteURL, getURL);
 app.set("view engine", "ejs");
 
-const PORT = 8080;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`TinyApp listening on port ${PORT}`);
 });

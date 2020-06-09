@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/JoshLampen/tinyapp#readme",
   "dependencies": {
-    "bcrypt": "2.0.0",
     "body-parser": "^1.19.0",
     "cookie-session": "^1.4.0",
     "dateformat": "^3.0.3",
