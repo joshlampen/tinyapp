@@ -19,7 +19,7 @@ index.get("/", (req, res) => {
   if (userID) {
     res.redirect("/urls");
   } else {
-    res.redirect("/login");
+    res.redirect("/register");
   }
 });
 
