@@ -8,7 +8,7 @@
   "description": "",
   "main": "express_server.js",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon -L server.js",
+    "start": "node server.js",
     "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
@@ -28,6 +28,7 @@
     "dateformat": "^3.0.3",
     "ejs": "^3.1.2",
     "express": "^4.17.1",
+    "heroku": "^7.42.1",
     "method-override": "^3.0.0"
   },
   "devDependencies": {
