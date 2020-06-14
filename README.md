@@ -7,17 +7,7 @@ TinyApp is a full-stack web application built with Node and Express. Users can u
 
 ## Final Product
 
-### Login Page
-!["Login Page"](https://github.com/JoshLampen/tinyapp/blob/master/docs/login-page.png?raw=true)
-
-### URLs Page
-!["URLs Page"](https://github.com/JoshLampen/tinyapp/blob/master/docs/urls-page.png?raw=true)
-
-### Show URL Page
-!["Show URL Page"](https://github.com/JoshLampen/tinyapp/blob/master/docs/show-url-page.png?raw=true)
-
-### New URL Page
-!["New URL Page"](https://github.com/JoshLampen/tinyapp/blob/master/docs/new-url-page.png?raw=true)
+[See here for website](https://project-tinyapp.herokuapp.com/)
 
 ## Dependencies
 
