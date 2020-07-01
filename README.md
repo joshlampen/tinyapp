@@ -12,6 +12,12 @@ TinyApp is a full-stack web application where can shorten long URLs (similar to 
 
 [See here for website](https://project-tinyapp.herokuapp.com/)
 
+## Getting Started
+
+1. Fork this repository, then clone your fork of this repository.
+2. Install all dependencies (using the `npm install` command).
+3. Run the development web server using the `node server.js` command. The app will be served at <http://localhost:8080/>.
+
 ## Dependencies
 
 - Node.js
@@ -22,8 +28,3 @@ TinyApp is a full-stack web application where can shorten long URLs (similar to 
 - cookie-session
 - method-override
 - dateformat
-
-## Getting Started
-
-- Install all dependencies (using the `npm install` command).
-- Run the development web server using the `node server.js` command.
